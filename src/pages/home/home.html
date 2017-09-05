@@ -1,14 +1,37 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Ionic Blank
+      Limay Safe App
     </ion-title>
+    <ion-buttons end>
+      <ion-chip [color]="connectionColor">
+        <ion-label>{{connection}}</ion-label>
+      </ion-chip>
+      <button ion-button color="primary">Edit Info</button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+  <div>
+    <ion-item>
+      <h1>Notes</h1>
+    </ion-item>
+    <ion-card>
+      <ion-card-content>
+        This application can be used only in Limay, Bataan Metropolitan Area Network.
+      </ion-card-content>
+    </ion-card>
+    <ion-card>
+        <ion-card-content>
+          Update your information so the municipality can contact you immediately when this device is triggered.
+        </ion-card-content>
+      </ion-card>
+    <ion-card>
+      <ion-card-content>
+        Please use this application only and in case of emergency.
+      </ion-card-content>
+    </ion-card>
+  </div>
+  <button class="trigger" ion-button [color]="buttonColor" round large (click)="trigger()" [disabled]="buttonDisabled"><ion-icon name="alert"></ion-icon></button>
 </ion-content>
