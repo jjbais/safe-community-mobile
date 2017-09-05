@@ -1,6 +1,6 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { DatabaseProvider } from '../../providers/database/database';
 
 @Component({
@@ -8,6 +8,7 @@ import { DatabaseProvider } from '../../providers/database/database';
   templateUrl: 'home.html'
 })
 export class HomePage {
+  mqttState: boolean;
   connection: string;
   connectionColor: string;
   buttonColor: string;
@@ -16,31 +17,35 @@ export class HomePage {
   triggerStateSubscription: Subscription;
 
   constructor(public navCtrl: NavController, public db: DatabaseProvider) {
-    this.buttonColor = 'danger';
-    this.buttonDisabled = false;
-    this.connection  = 'Not Connected';
-    this.connectionColor = 'danger';
-
     this.mqttStateSubscription = db.mqttState.subscribe(state => {
       if(state){
         this.connection = 'Connected';
         this.connectionColor = 'secondary';
-        this.buttonDisabled = false;
+        this.mqttState = true;
       }else{
         this.connection = 'Not Connected';
         this.connectionColor = 'danger';
-        this.buttonDisabled = true;
+        this.mqttState = false;
       }
     });
     this.triggerStateSubscription = db.triggerState.subscribe(state => {
       if(state){
         this.buttonColor = 'secondary';
         this.buttonDisabled = true;
-      }else{
+      }else if(state && !this.mqttState){
+        this.buttonColor = 'danger';
+        this.buttonDisabled = true;
+      }else if(!state && this.mqttState){
         this.buttonColor = 'danger';
         this.buttonDisabled = false;
+      }else{
+        this.buttonColor = 'danger';
+        this.buttonDisabled = true;
       }
     });
+
+    db.changeMqttState(true);
+    db.changeTriggerState(false);
   }
 
   ngOnDestroy(){
