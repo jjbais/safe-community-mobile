@@ -8,6 +8,7 @@ import { HttpModule } from '@angular/http';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { DatabaseProvider } from '../providers/database/database';
+import { MqttProvider } from '../providers/mqtt/mqtt';
 
 declare var window;
 
@@ -37,7 +38,8 @@ export class MyErrorHandler implements ErrorHandler {
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     { provide: ErrorHandler, useClass: MyErrorHandler },
-    DatabaseProvider
+    DatabaseProvider,
+    MqttProvider
   ]
 })
 export class AppModule {}

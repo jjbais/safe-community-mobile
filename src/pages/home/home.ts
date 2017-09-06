@@ -2,49 +2,49 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Subscription } from 'rxjs';
 import { DatabaseProvider } from '../../providers/database/database';
+import { MqttProvider } from '../../providers/mqtt/mqtt'
+import { AlertController } from 'ionic-angular';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
-  mqttState: boolean;
   connection: string;
   connectionColor: string;
   buttonColor: string;
   buttonDisabled: boolean;
   mqttStateSubscription: Subscription;
   triggerStateSubscription: Subscription;
+  isMqttConnected: boolean;
+  isTriggerd: boolean;
 
-  constructor(public navCtrl: NavController, public db: DatabaseProvider) {
-    this.mqttStateSubscription = db.mqttState.subscribe(state => {
-      if(state){
+  constructor(public navCtrl: NavController, public db: DatabaseProvider, public mqtt: MqttProvider, public alert: AlertController) {
+    this.mqttStateSubscription = db.mqttState.subscribe(mqttState => {
+      if(mqttState){
         this.connection = 'Connected';
         this.connectionColor = 'secondary';
-        this.mqttState = true;
+        this.isMqttConnected = true;
       }else{
         this.connection = 'Not Connected';
         this.connectionColor = 'danger';
-        this.mqttState = false;
+        this.isMqttConnected = false;
       }
     });
-    this.triggerStateSubscription = db.triggerState.subscribe(state => {
-      if(state){
+    this.triggerStateSubscription = db.triggerState.subscribe(triggerState => {
+      if(triggerState){
         this.buttonColor = 'secondary';
         this.buttonDisabled = true;
-      }else if(state && !this.mqttState){
-        this.buttonColor = 'danger';
-        this.buttonDisabled = true;
-      }else if(!state && this.mqttState){
-        this.buttonColor = 'danger';
-        this.buttonDisabled = false;
+        this.isTriggerd = true;
       }else{
         this.buttonColor = 'danger';
-        this.buttonDisabled = true;
+        this.buttonDisabled = false;
+        this.isTriggerd = false;
       }
     });
+    
 
-    db.changeMqttState(true);
+    db.changeMqttState(false);
     db.changeTriggerState(false);
   }
 
@@ -54,6 +54,14 @@ export class HomePage {
   }
 
   trigger(){
-    this.db.trigger();
+    if(this.isMqttConnected){
+      this.mqtt.trigger();
+    }else{
+      this.alert.create({
+        title: 'Error!',
+        subTitle: 'Device is not connected. Please try again.',
+        buttons: ['OK']
+      }).present();
+    }
   }
 }

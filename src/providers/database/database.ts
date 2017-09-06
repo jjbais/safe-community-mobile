@@ -2,16 +2,22 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable, Observer } from 'rxjs';
-import { AlertController } from 'ionic-angular';
 
 @Injectable()
 export class DatabaseProvider {
   mqttState: Observable<boolean>;
   mqttStateObserver: Observer<boolean>;
   triggerState: Observable<boolean>;
-  triggerStateObserver: Observer<boolean>
+  triggerStateObserver: Observer<boolean>;
 
-  constructor(public http: Http, public alert: AlertController) {
+  user = {
+    name: 'Jerome Joseph Bais',
+    mobile: '09279574701',
+    lat: 14.561160,
+    long: 120.590756
+  }
+
+  constructor(public http: Http) {
     console.log('Hello DatabaseProvider Provider');
 
     this.mqttState = new Observable<boolean>(observer => 
@@ -28,13 +34,5 @@ export class DatabaseProvider {
 
   changeTriggerState(state: boolean){
     if (this.triggerStateObserver !== undefined) this.triggerStateObserver.next(state);
-  }
-
-  trigger(){
-    this.alert.create({
-      title: 'Device Triggered!',
-      subTitle: 'Please wait for further assistance.',
-      buttons: ['OK']
-    }).present();
   }
 }
