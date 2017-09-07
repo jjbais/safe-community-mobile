@@ -52,8 +52,8 @@ export class MqttProvider {
   }
 
   onMessage(topic: string, payload: string) {
-    if(topic === 'community/mobile/' + this.db.user.name + '/' + this.db.user.mobile + '/' + this.db.user.lat + '/' + this.db.user.long + '/'){
-      if(payload){
+    if(topic === 'community/mobile/' + this.db.user.name + '/' + this.db.user.mobile + '/trigger/'){
+      if(payload === 'true'){
         this.db.changeTriggerState(true);
       }else{
         this.db.changeTriggerState(false);
@@ -66,12 +66,17 @@ export class MqttProvider {
   }
 
   trigger(){
-    this.publish('community/mobile/' + this.db.user.name + '/' + this.db.user.mobile + '/' + this.db.user.lat + '/' + this.db.user.long + '/', 'true');
+    this.publish('mobile/' + this.db.user.name + '/' + this.db.user.mobile + '/trigger/', 'true');
+    this.location();
     this.alert.create({
       title: 'Device Triggered!',
       subTitle: 'Please wait for further assistance.',
       buttons: ['OK']
     }).present();
+  }
+
+  location(){
+    this.publish('community/mobile/' + this.db.user.name + '/' + this.db.user.mobile + '/location/',  this.db.user.lat + '/' + this.db.user.long);
   }
 
 }

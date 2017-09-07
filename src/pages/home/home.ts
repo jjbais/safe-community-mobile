@@ -43,7 +43,6 @@ export class HomePage {
       }
     });
     
-
     db.changeMqttState(false);
     db.changeTriggerState(false);
   }
