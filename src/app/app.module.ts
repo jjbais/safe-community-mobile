@@ -8,6 +8,7 @@ import { HttpModule } from '@angular/http';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
+import { UserInfoModalPage } from '../pages/user-info-modal/user-info-modal'
 import { DatabaseProvider } from '../providers/database/database';
 import { MqttProvider } from '../providers/mqtt/mqtt';
 
@@ -22,7 +23,8 @@ export class MyErrorHandler implements ErrorHandler {
 @NgModule({
   declarations: [
     MyApp,
-    HomePage
+    HomePage,
+    UserInfoModalPage
   ],
   imports: [
     BrowserModule,
@@ -33,7 +35,8 @@ export class MyErrorHandler implements ErrorHandler {
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    HomePage,
+    UserInfoModalPage
   ],
   providers: [
     StatusBar,

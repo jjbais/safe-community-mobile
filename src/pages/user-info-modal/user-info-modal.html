@@ -1,0 +1,26 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>User Information {{test}} </ion-title>
+    <ion-buttons end *ngIf="isUserInfo">
+      <button ion-button (click)="dismiss()">Cancel</button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+      <ion-label fixed>Full Name</ion-label>
+      <ion-input type="text" name="name" [(ngModel)]="user.name"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label fixed>Mobile Number</ion-label>
+      <ion-input type="number" name="mobile" [(ngModel)]="user.mobile"></ion-input>
+    </ion-item>
+  </ion-list>
+  <button ion-button block (click)="updateInfo()">Update Information</button>
+</ion-content>

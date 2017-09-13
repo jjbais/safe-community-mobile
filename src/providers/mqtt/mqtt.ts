@@ -3,6 +3,7 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { DatabaseProvider } from '../database/database';
 import { AlertController } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 import * as mqtt from 'mqtt';
 
 @Injectable()
@@ -15,11 +16,11 @@ export class MqttProvider {
   isConnected: boolean;
   rootTopic: string;
 
-  constructor(public http: Http, public db: DatabaseProvider, public alert: AlertController) {
+  constructor(public http: Http, public db: DatabaseProvider, public alert: AlertController, public storage: Storage) {
     console.log('Hello MqttProvider Provider');
 
     this.connectionType = 'ws';
-    this.url = 'safe.local'; // safe.local, iot.eclipse.org
+    this.url = '192.168.200.1'; // safe.local, iot.eclipse.org
     this.port = '1884';          // 1884, 80/ws
 
     this.brokerUrl = this.connectionType + '://' + this.url + ':' + this.port;
@@ -30,6 +31,9 @@ export class MqttProvider {
 
     this.client.on('connect', () => {
       this.onConnect();
+    });
+    this.client.on('close', () => {
+      this.db.changeMqttState(false);
     });
     this.client.on('message', (topic, message) => {
       this.onMessage(topic, message.toString());
@@ -52,13 +56,16 @@ export class MqttProvider {
   }
 
   onMessage(topic: string, payload: string) {
-    if(topic === 'community/mobile/' + this.db.user.name + '/' + this.db.user.mobile + '/trigger/'){
-      if(payload === 'true'){
-        this.db.changeTriggerState(true);
-      }else{
-        this.db.changeTriggerState(false);
+    this.storage.get('userInfoLimay').then((value) => {
+      if(topic === 'community/mobile/' + value.name + '/' + value.mobile + '/trigger/'){
+        if(payload === 'true'){
+          this.db.changeTriggerState(true);
+        }else{
+          this.db.changeTriggerState(false);
+        }
       }
-    }
+    });
+    
   }
 
   publish(topic: string, payload: string) {
